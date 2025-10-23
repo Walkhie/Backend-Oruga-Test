@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  # -------------------------------
+  # Orion Context Broker
+  # -------------------------------
+  orion:
+    image: fiware/orion:3.8.1
+    container_name: orion
+    restart: unless-stopped
+    ports:
+      - "1026:1026"
+    depends_on:
+      - mongo
+    environment:
+      - ORION_LOG_LEVEL=DEBUG
+    command: -dbhost mongo -logLevel DEBUG
+
+  # -------------------------------
+  # MongoDB (base de datos de Orion)
+  # -------------------------------
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+  # -------------------------------
+  # Backend FastAPI
+  # -------------------------------
+  backend:
+    build: .
+    container_name: oruga_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - orion
+    volumes:
+      - .:/app
+
+volumes:
+  mongo_data:
