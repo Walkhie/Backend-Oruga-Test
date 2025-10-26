@@ -14,20 +14,20 @@ def ensure_entity_exist(entity_id:str) -> bool:
     r = requests.get(url, headers=HEADERS, timeout=5)
     return r.status_code == 200
 
-def create_entity(entity_id: str) -> bool:
+def create_entity(entity_id: str, entity_type: str = "RobotOruga", state: str = "IDLE") -> bool:
     "Crea una nueva entidad oruga en Orion"
     url = f"{settings.ORION_HOST}/v2/entities"
     payload = {
         "id": entity_id,
-        "type": "RobotOruga",
-        "state": {"type":"Text","value":"IDLE"},
+        "type": entity_type,
+        "state": {"type":"Text","value":state},
         #"speed":{"type":"Integer","value":0}
     }
 
     r = requests.post(url, json=payload, headers=HEADERS, timeout=5)
     # status_code 201 = creado, 422 = ya existe
 
-def update_entity_state(entity_id:str, state: str):
+def update_entity_state(entity_id:str,entity_type: str = "RobotOruga", state:str = "IDLE"):
     # Actualiza el estado de la entidad. Crea la entidad si no existe
 
     # 1. Verificar existencia
@@ -41,7 +41,7 @@ def update_entity_state(entity_id:str, state: str):
     
     #2. Actualizar el atributo state 
     url = f"{settings.ORION_HOST}/v2/entities/{entity_id}/attrs"
-    data = {"state": {"type": "Text","value": state}}
+    data = {"state": {"type": entity_type,"value": state}}
 
     r = requests.patch(url, json=data, headers=HEADERS, timeout=5)
     if r.status_code not in (204,201):

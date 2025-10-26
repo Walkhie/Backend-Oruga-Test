@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
-class Command(BaseModel):
-    entity_id: str = Field(...,example="oruga001")
-    state: str = Field(..., example = "IDLE")
+class CreateEntity(BaseModel):
+    entity_id: str = Field(..., example="oruga001")
+    entity_type: str = Field("RobotOruga", example="RobotOruga")
+    state: str = Field("IDLE", example="IDLE")

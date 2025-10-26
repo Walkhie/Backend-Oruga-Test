@@ -15,10 +15,9 @@ app.add_middleware(
 )
 
 # Record routes 
-app.include_router(cmd_router, prefix=settings.API_PREFIX,tags=["commands"])
+app.include_router(cmd_router, prefix=settings.API_PREFIX,tags=["orion"])
 
 @app.get("/health")
-## Solo me esta devolviendo el nombre de la app
 def health():
     try:
         r= requests.get(f"{settings.ORION_HOST}/version", timeout=3)

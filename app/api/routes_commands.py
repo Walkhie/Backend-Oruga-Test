@@ -1,17 +1,21 @@
 from fastapi import APIRouter, HTTPException
-from app.api.models import Command
-from app.core.orion_client import update_entity_state
+from app.api.models import CreateEntity
+from app.core.orion_client import update_entity_state, create_entity
 
 router = APIRouter()
 
-@router.post("/commands")
-async def send_command(cmd: Command):
-    " Create the entity if no exist and update the state in Orion"
+@router.post("/entities/create")
+def create_entity_route(body: CreateEntity):
     try:
-        result = update_entity_state(cmd.entity_id, cmd.state)
-        return {
-            "message": f"Entidad {cmd.entity_id} actualizada correctamente.",
-            "data": result
-        }
+        code = create_entity(body.entity_id,body.entity_type,body.state)
+        return {"message": "Entidad creada (o ya existia)", "status_code": code}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al actualizar el estado de la entidad: {e}")
+        raise HTTPException(status_code=500, detail = str(e))
+    
+@router.post("/entities/upsert")
+def upsert_entity_route(body: CreateEntity):
+    try:
+        code = update_entity_state(body.entity_id,body.entity_type,body.state)
+        return {"message":"Entidad actualizada","status_code":code}
+    except Exception as e:
+        raise HTTPException(status_code=500,detail=str(e))
