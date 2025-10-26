@@ -24,8 +24,15 @@ def create_entity(entity_id: str, entity_type: str = "RobotOruga", state: str = 
         #"speed":{"type":"Integer","value":0}
     }
 
-    r = requests.post(url, json=payload, headers=HEADERS, timeout=5)
-    # status_code 201 = creado, 422 = ya existe
+    try:
+        r = requests.post(url, json=payload, headers=HEADERS, timeout=5)
+        print("Orion response:", r.status_code, r.text)
+        return {"status_code": r.status_code, "response": r.text}
+        # status_code 201 = creado, 422 = ya existe
+
+    except requests.exceptions.RequestException as e:
+        print("Error de conexión con Orion:", e)
+        raise
 
 def update_entity_state(entity_id:str,entity_type: str = "RobotOruga", state:str = "IDLE"):
     # Actualiza el estado de la entidad. Crea la entidad si no existe
