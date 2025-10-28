@@ -21,7 +21,7 @@ def upsert_entity_route(body: CreateEntity):
         raise HTTPException(status_code=500,detail=str(e))
     
 @router.get("/entities/get")
-def get_entities():
+def get_entities_route():
     try:
         entities = get_entities()
 
