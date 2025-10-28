@@ -55,3 +55,38 @@ def update_entity_state(entity_id:str,entity_type: str = "RobotOruga", state:str
         raise Exception(f"Error al actualizar entidad {entity_id}: {r.text}")
     
     return {"entity": entity_id, "state": state}
+
+def get_entities():
+    # Obtiene todas las entidades del Orion Context Broker.
+
+    url = f"{settings.ORION_HOST}/v2/entities"
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=5)
+        print("Orion GET /entities:", r.status_code)
+        if r.status_code == 200:
+            return r.json()
+        else:
+            raise Exception(f"Error {r.status_code}: {r.text}")
+    except requests.exceptions.RequestException as e:
+        print("Error de conexión con Orion:", e)
+        raise
+
+def delete_entity(entity_id: str):
+    """
+    Elimina una entidad de Orion Context Broker por su ID.
+    """
+    url = f"{settings.ORION_HOST}/v2/entities/{entity_id}"
+    try:
+        r = requests.delete(url, headers=HEADERS, timeout=5)
+        print(f"DELETE /entities/{entity_id}", r.status_code, r.text)
+
+        if r.status_code == 204:
+            return {"deleted": True, "message": "Entidad eliminada correctamente"}
+        elif r.status_code == 404:
+            return {"deleted": False, "message": "Entidad no encontrada"}
+        else:
+            raise Exception(f"Error {r.status_code}: {r.text}")
+
+    except requests.exceptions.RequestException as e:
+        print("Error de conexión con Orion:", e)
+        raise
