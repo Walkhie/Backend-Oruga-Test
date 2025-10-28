@@ -24,10 +24,14 @@ def upsert_entity_route(body: CreateEntity):
 def get_entities():
     try:
         entities = get_entities()
+
         if not entities:
             return {"message": "No hay entidades registradas."}
+        
         return {"count": len(entities), "entities": entities}
+    
     except Exception as e:
+        print("Error en /entities/get:", e)
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.delete("/entities/delete/{entity_id}")
