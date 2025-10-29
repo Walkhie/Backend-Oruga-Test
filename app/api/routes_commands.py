@@ -40,7 +40,7 @@ def get_entity_state_route(entity_id:str):
         state = get_entity_state(entity_id)
         if state is None:
             return {"message": f"La entidad '{entity_id}' no existe."}
-        return {"entity_id": entity_id, "state": state}
+        return {"state": state}
     except Exception as e:
         print("Error en /entities/state:", e)
         raise HTTPException(status_code=500, detail=str(e))
