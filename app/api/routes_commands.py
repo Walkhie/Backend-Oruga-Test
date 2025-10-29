@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.api.models import CreateEntity
-from app.core.orion_client import update_entity_state, create_entity, get_entities, delete_entity
+from app.core.orion_client import update_entity_state, create_entity, get_entities, delete_entity, get_entity_state
 
 router = APIRouter()
 
@@ -34,6 +34,18 @@ def get_entities_route():
         print("Error en /entities/get:", e)
         raise HTTPException(status_code=500, detail=str(e))
     
+@router.get("/entities/get/state/{entity_id}")
+def get_entity_state(entity_id:str):
+    try:
+        state = get_entity_state(entity_id)
+        if state is None:
+            return {"message": f"La entidad '{entity_id}' no existe."}
+        return {"entity_id": entity_id, "state": state}
+    except Exception as e:
+        print("Error en /entities/state:", e)
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    
 @router.delete("/entities/delete/{entity_id}")
 def delete_entity_route(entity_id: str):
     # Elimina una entidad de Orion por su ID.
@@ -42,3 +54,4 @@ def delete_entity_route(entity_id: str):
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    

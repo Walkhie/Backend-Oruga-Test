@@ -102,3 +102,25 @@ def delete_entity(entity_id: str):
     except requests.exceptions.RequestException as e:
         print("Error de conexión con Orion:", e)
         raise
+
+def get_entity_state(entity_id: str):
+    
+    # Consulta en Orion una entidad específica y devuelve solo su estado actual.
+    url = f"{settings.ORION_HOST}/v2/entities/{entity_id}"
+    try:
+
+        r = requests.get(url, headers=delete_headers, timeout=5)
+        print(f"Orion GET /entities/{entity_id}:", r.status_code)
+
+        if r.status_code == 200:
+            data = r.json()
+            return data["state"]["value"]
+
+        elif r.status_code == 404:
+            return None
+
+        else:
+            raise Exception(f"Error {r.status_code}: {r.text}")
+
+    except requests.exceptions.RequestException as e:
+        raise Exception(f"Error de conexión con Orion: {e}")
