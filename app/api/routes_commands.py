@@ -35,7 +35,7 @@ def get_entities_route():
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.get("/entities/get/state/{entity_id}")
-def get_entity_state(entity_id:str):
+def get_entity_state_route(entity_id:str):
     try:
         state = get_entity_state(entity_id)
         if state is None:
