@@ -9,12 +9,13 @@ De esta forma, el backend actúa como un intermediario inteligente que recibe la
 ### Comienzo rapido (cloud aws)
 1. Iniciar una instancia EC2 (Recuerda abrir los puertos que vamos a utilizar)
 2. Instalar dependencias (git y docker):
--sudo yum install -y git docker
+- sudo yum install 
+- y git docker
 3. Habilita y arranca docker:
--sudo systemctl enable docker
--sudo systemctl start docker
+- sudo systemctl enable docker
+- sudo systemctl start docker
 4. Instala docker compose (procura instalar la version más reciente)
 5. Clona el repositorio
-git clone https://github.com/Walkhie/Backend-Oruga-Test.git
+- git clone https://github.com/Walkhie/Backend-Oruga-Test.git
 6. Entra a la carpeta y lanza los 3 servicios (FASTAPI, ORION, MONGODB):
--docker compose up -d --build
+- docker compose up -d --build
