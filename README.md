@@ -9,8 +9,7 @@ De esta forma, el backend actúa como un intermediario inteligente que recibe la
 ### Comienzo rapido (cloud aws)
 1. Iniciar una instancia EC2 (Recuerda abrir los puertos que vamos a utilizar)
 2. Instalar dependencias (git y docker):
-- sudo yum install 
-- y git docker
+- sudo yum install - y git docker
 3. Habilita y arranca docker:
 - sudo systemctl enable docker
 - sudo systemctl start docker
