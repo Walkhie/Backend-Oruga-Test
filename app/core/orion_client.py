@@ -14,14 +14,14 @@ def ensure_entity_exist(entity_id:str) -> bool:
     r = requests.get(url, headers=HEADERS, timeout=5)
     return r.status_code == 200
 
-def create_entity(entity_id: str, entity_type: str = "RobotOruga", state: str = "IDLE") -> bool:
+def create_entity(entity_id: str, entity_type: str = "RobotOruga", state: str = "IDLE", speed : int = 0) -> bool:
     "Crea una nueva entidad oruga en Orion"
     url = f"{settings.ORION_HOST}/v2/entities"
     payload = {
         "id": entity_id,
         "type": entity_type,
         "state": {"type":"Text","value":state},
-        #"speed":{"type":"Integer","value":0}
+        "speed":{"type":"Integer","value":speed}
     }
 
     try:
@@ -34,7 +34,7 @@ def create_entity(entity_id: str, entity_type: str = "RobotOruga", state: str = 
         print("Error de conexión con Orion:", e)
         raise
 
-def update_entity_state(entity_id:str,entity_type: str = "RobotOruga", state:str = "IDLE"):
+def update_entity_state(entity_id:str,entity_type: str = "RobotOruga", state:str = "IDLE",speed:int = 0):
     # Actualiza el estado de la entidad. Crea la entidad si no existe
 
     # 1. Verificar existencia
@@ -48,7 +48,8 @@ def update_entity_state(entity_id:str,entity_type: str = "RobotOruga", state:str
     
     #2. Actualizar el atributo state 
     url = f"{settings.ORION_HOST}/v2/entities/{entity_id}/attrs"
-    data = {"state": {"type": entity_type,"value": state}}
+    data = {"state": {"type": "Text","value": state},
+            "speed": {"type": "Integer", "value":speed}}
 
     r = requests.patch(url, json=data, headers=HEADERS, timeout=5)
     if r.status_code not in (204,201):
@@ -103,7 +104,7 @@ def delete_entity(entity_id: str):
         print("Error de conexión con Orion:", e)
         raise
 
-def get_entity_state(entity_id: str):
+def get_entity_status(entity_id: str):
     
     # Consulta en Orion una entidad específica y devuelve solo su estado actual.
     url = f"{settings.ORION_HOST}/v2/entities/{entity_id}"
@@ -114,7 +115,8 @@ def get_entity_state(entity_id: str):
 
         if r.status_code == 200:
             data = r.json()
-            return data["state"]["value"]
+            return {"state": data["state"]["value"],
+                    "speed": data["speed"]["value"]}
 
         elif r.status_code == 404:
             return None

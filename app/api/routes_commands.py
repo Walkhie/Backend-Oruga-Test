@@ -1,13 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from app.api.models import CreateEntity
-from app.core.orion_client import update_entity_state, create_entity, get_entities, delete_entity, get_entity_state
+from app.core.orion_client import update_entity_state, create_entity, get_entities, delete_entity, get_entity_status
 
 router = APIRouter()
 
 @router.post("/entities/create")
 def create_entity_route(body: CreateEntity):
     try:
-        code = create_entity(body.entity_id,body.entity_type,body.state)
+        code = create_entity(body.entity_id,body.entity_type,body.state,body.speed)
         return {"message": "Entidad creada (o ya existia)", "status_code": code}
     except Exception as e:
         raise HTTPException(status_code=500, detail = str(e))
@@ -15,7 +15,7 @@ def create_entity_route(body: CreateEntity):
 @router.post("/entities/upsert")
 def upsert_entity_route(body: CreateEntity):
     try:
-        code = update_entity_state(body.entity_id,body.entity_type,body.state)
+        code = update_entity_state(body.entity_id,body.entity_type,body.state,body.speed)
         return {"message":"Entidad actualizada","status_code":code}
     except Exception as e:
         raise HTTPException(status_code=500,detail=str(e))
@@ -35,12 +35,12 @@ def get_entities_route():
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.get("/entities/get/state/{entity_id}")
-def get_entity_state_route(entity_id:str):
+def get_entity_status_route(entity_id:str):
     try:
-        state = get_entity_state(entity_id)
-        if state is None:
+        entity_data = get_entity_status(entity_id)
+        if entity_data is None:
             return {"message": f"La entidad '{entity_id}' no existe."}
-        return {"state": state}
+        return {"entity_data": entity_data}
     except Exception as e:
         print("Error en /entities/state:", e)
         raise HTTPException(status_code=500, detail=str(e))
