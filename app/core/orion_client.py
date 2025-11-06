@@ -21,7 +21,7 @@ def create_entity(entity_id: str, entity_type: str = "RobotOruga", state: str = 
         "id": entity_id,
         "type": entity_type,
         "state": {"type":"Text","value":state},
-        "speed":{"type":"Integer","value":0}
+        "speed":{"type":"Integer","value":speed}
     }
 
     try:
@@ -48,7 +48,8 @@ def update_entity_state(entity_id:str,entity_type: str = "RobotOruga", state:str
     
     #2. Actualizar el atributo state 
     url = f"{settings.ORION_HOST}/v2/entities/{entity_id}/attrs"
-    data = {"state": {"type": entity_type,"value": state}}
+    data = {"state": {"type": "Text","value": state},
+            "speed": {"type": "Integer", "value":speed}}
 
     r = requests.patch(url, json=data, headers=HEADERS, timeout=5)
     if r.status_code not in (204,201):
@@ -103,7 +104,7 @@ def delete_entity(entity_id: str):
         print("Error de conexión con Orion:", e)
         raise
 
-def get_entity_state_speed(entity_id: str):
+def get_entity_status(entity_id: str):
     
     # Consulta en Orion una entidad específica y devuelve solo su estado actual.
     url = f"{settings.ORION_HOST}/v2/entities/{entity_id}"
